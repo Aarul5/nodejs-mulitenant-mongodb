@@ -1,0 +1,13 @@
+.svn/
+.vscode/
+log/
+node_modules/
+smslog/*.csv
+jsconfig.json
+package-lock.json
+bulkemail/
+downloads/
+tsconfig.json
+**/*.ts
+**/*.d.ts
+**/*.js.map
