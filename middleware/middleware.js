@@ -22,14 +22,11 @@ var authorizeDB = function (req, res, next) {
     if (dbName) {
         if (DBConnectionsList[dbName]) {
             console.log("DB in Connection List.....")
-            req.UserDB = DBConnectionsList[dbName];
-            req.studentModel = dataBaseSchema.createSchema(DBConnectionsList[dbName]);
             return next();
         } else {
             DBConnectionsList[dbName] = mongoose.createConnection('mongodb://localhost:27017/' + dbName);
-            req.UserDB = DBConnectionsList[dbName];
             //Load All models under db connection and store it 'DBConnectionsList'.
-            req.studentModel = dataBaseSchema.createSchema(DBConnectionsList[dbName]);
+            DBConnectionsList[dbName]['studentModel'] = dataBaseSchema.createSchema(DBConnectionsList[dbName]);
             console.log("New DB added in Connection List.....")
             return next();
         }

@@ -3,7 +3,7 @@
  * Create School in Particular User Database 
  */
 module.exports.CreateSchool = function (req, res, next) {
-    var Student = req.studentModel;
+    var Student = DBConnectionsList[req.get('UserName')].studentModel;
     var data = {
         'SchoolName': "Testsd",
         'SchoolId': "12121",

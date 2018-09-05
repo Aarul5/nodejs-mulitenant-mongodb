@@ -3,9 +3,9 @@ var app = express()
 const mongoose = require('mongoose');
 var bodyParser = require('body-parser')
 var router = express.Router();
-var find = require('find');
+var dynamicDB = require('./middleware/middleware');
 
-//Db Connection
+//Auth Db Connection
 var url = "mongodb://localhost:27017/AuthDB";
 
 mongoose.connect(url);
@@ -19,7 +19,10 @@ authDB.once('open', function connectionSuccess() {
 authDB.on('disconnected', () => {
     console.log(`Authentication database Disconnected.\n`.bold.red);
 });
-// end Db connection
+//End Auth Db connection
+
+//middleware : Find the Usename from header and connect db.
+app.use(dynamicDB.authorizeDB);
 
 require('./routes')(router);
 
@@ -33,6 +36,7 @@ app.use(function (req, res, next) {
 });
 
 app.use('/api', router);
+
 app.use(errorHandler);
 
 function errorHandler(err, req, res, next) {
@@ -45,17 +49,6 @@ function errorHandler(err, req, res, next) {
     }
     return res.status(500).send(err);
 }
-
-// find.file(/\.model.js$/, __dirname,'/models', function (files) {
-//     console.log(files);
-// })
-
-
-
-
-var fs = require('fs');
-var path = require('path');
-var dirPath = path.resolve(__dirname, './models'); // path to your directory goes here
 
 app.listen(8085, function () {
     console.log("localhost:8085 Auth server.")

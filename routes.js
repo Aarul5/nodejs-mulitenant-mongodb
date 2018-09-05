@@ -11,3 +11,4 @@ module.exports = function (router) {
     var school = require('./controller/school.controller')
     router.post('/create/school', school.CreateSchool);
 }
+
