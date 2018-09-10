@@ -4,6 +4,7 @@ var UserSchema = mongoose.Schema;
 
 
 var UserModel = new UserSchema({
+
     UserName: {
         type: String,
         required: [true, 'User required.'],
@@ -13,6 +14,15 @@ var UserModel = new UserSchema({
     Password: {
         type: String,
         required: [true, 'Password required.'],
+        trim: true
+    },
+    DataBaseName: {
+        type: String,
+        required: [true, 'Database required.'],
+        trim: true
+    },
+    Role: {
+        type: String,
         trim: true
     }
 }, { versionkey: false, collection: 'userlogin' });

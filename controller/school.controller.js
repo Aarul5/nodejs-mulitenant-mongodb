@@ -1,15 +1,11 @@
 'use strict';
+var jwt = require('../commonservice/jwtverify');
 /**
  * Create School in Particular User Database 
  */
 module.exports.CreateSchool = function (req, res, next) {
-    var Student = DBConnectionsList[req.get('UserName')].studentModel;
-    var data = {
-        'SchoolName': "Testsd",
-        'SchoolId': "12121",
-        'DeanName': "Arul"
-    }
-    Student.create(data, function (err, success) {
+    var Student = DBConnectionsList[jwt.jwtverify(req)].studentModel;
+    Student.create(req.body, function (err, success) {
         if (err) {
             return res.status(402).send(err);
         }

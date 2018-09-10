@@ -10,7 +10,7 @@ var dataBaseSchema = require('../models/school.model');
  * 3. Create Collection under new DB
  * @param {username} UserDbName 
  */
-function createDB(UserDbName) {
+function createDB(UserDbName, cb) {
     var uri = 'mongodb://localhost:27017';
     var AdminDb = mongoose.createConnection(uri);
     AdminDb.on('open', function () {
@@ -21,17 +21,19 @@ function createDB(UserDbName) {
             console.log(allDatabases);
             if (allDatabases.length > 0) {
                 allDatabases.forEach((db) => {
-                    if (db.name == UserDbName) {
+                    if (db.name == `Keo_${UserDbName}`) {
                         console.log(`DB ${db.name} is already exits.`);
                         dbExists = true;
+                        cb(true);
                     }
                 })
                 if (!dbExists) {
-                    var newuri = `mongodb://localhost:27017/${UserDbName}`;
+                    var newuri = `mongodb://localhost:27017/Keo_${UserDbName}`;
                     console.log("Db Creating Process On...." + UserDbName)
                     var NewUserDb = mongoose.createConnection(newuri);
                     dataBaseSchema.createSchema(NewUserDb);
                     AdminDb.close();
+                    cb(false);
                 }
             }
         });
@@ -39,6 +41,4 @@ function createDB(UserDbName) {
 }
 
 
-module.exports = {
-    createDB: createDB
-}
+module.exports = { createDB }
