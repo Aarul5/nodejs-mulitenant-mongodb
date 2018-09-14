@@ -22,7 +22,7 @@ function createSchema(connection) {
         Email: {
             type: String,
             trim: true
-        },
+        }
     }, { versionkey: false, collection: 'school' });
     return connection.model('SchoolModel', SchoolModel);
 }

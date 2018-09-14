@@ -7,6 +7,7 @@ var jwt = require('jsonwebtoken');
 var config = require('../config.js');
 var Q = require('q');
 var passwordHasher = require('password-hash');
+var passport = require('passport');
 
 
 
@@ -15,6 +16,7 @@ var passwordHasher = require('password-hash');
  * success -> create DataBase under UserName
  * error -> user not created 
  */
+var passport = require('passport');
 
 module.exports.createClient = function (req, res, next) {
     var application = req.body;
@@ -24,6 +26,7 @@ module.exports.createClient = function (req, res, next) {
             if (!result) {
                 application.DataBaseName = req.body.UserName;
                 application.Role = "Admin";
+                application.Password = getHashedPassword(req.body.Password);
                 user.create(application, function (err, success) {
                     if (err) {
                         return res.status(402).send(err);
@@ -44,7 +47,6 @@ module.exports.createClient = function (req, res, next) {
 };
 
 module.exports.userLogin = function (req, res, next) {
-
     var username = req.body.UserName;
     var password = req.body.Password;
     user.findOne({ 'UserName': new RegExp('^' + username + '$', "i") }, function (err, user) {
@@ -52,7 +54,7 @@ module.exports.userLogin = function (req, res, next) {
             return res.status(402).send(err);
         }
         if (user) {
-            if (password == user.Password) {
+            if (passwordHasher.verify(password, user.Password)) {
                 getJWTResult(username, user)
                     .then((jwtResult) => {
                         req.UserName = username;
@@ -68,6 +70,23 @@ module.exports.userLogin = function (req, res, next) {
     });
 }
 
+
+module.exports.userLoginGoogle = function (req, res, next) {
+    var username = req.body.UserName;
+    var password = req.body.Password;
+    console.log("Google Auth...");
+    passport.authenticate('google', {
+        scope: ['profile']
+    })
+}
+module.exports.googleAuth = function (req, res, next) {
+    var username = req.body.UserName;
+    var password = req.body.Password;
+    res.send("Google Redirect url...")
+}
+
+
+
 function jwtverify(token) {
     jwt.verify(token, config.secret, { issuer: config.issuer }, function (err, decodedToken) {
         console.log(decodedToken);
@@ -77,7 +96,7 @@ function jwtverify(token) {
 
 //Generate JWT Token
 function getJWT(userId, DataBaseName) {
-    var accessToken = jwt.sign({ 'UserName': userId, 'CName': DataBaseName }, config.secret,
+    var accessToken = jwt.sign({ 'UserName': userId, 'CName': DataBaseName, 'Permission': ['update', 'get all school records', 'delete'] }, config.secret,
         {
             //algorithms: ["HS256", "HS384"],
             issuer: config.issuer

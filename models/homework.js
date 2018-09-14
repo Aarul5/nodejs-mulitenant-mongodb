@@ -11,10 +11,6 @@ function createSchema(connection) {
             trim: true,
             unique: true
         },
-        SchoolId: {
-            type: String,
-            trim: true
-        },
         DeanName: {
             type: String,
             trim: true
@@ -23,6 +19,10 @@ function createSchema(connection) {
             type: String,
             trim: true
         },
+        SchoolId: [{
+            type: Schema.ObjectId,
+            ref: 'SchoolModel'
+        }],
     }, { versionkey: false, collection: 'homework' });
     return connection.model('HomeWorkModel', HomeWorkModel);
 }

@@ -24,6 +24,10 @@ var UserModel = new UserSchema({
     Role: {
         type: String,
         trim: true
+    },
+    GoogleId: {
+        type: String,
+        trim: true
     }
 }, { versionkey: false, collection: 'userlogin' });
 mongoose.model('UserModel', UserModel);

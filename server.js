@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 var bodyParser = require('body-parser')
 var router = express.Router();
 var dynamicDB = require('./middleware/middleware');
-
+var passportconfig = require('./commonservice/googleoauth.service');
 //Auth Db Connection
 var url = "mongodb://localhost:27017/AuthDB";
 
@@ -40,6 +40,7 @@ app.use('/api', router);
 app.use(errorHandler);
 
 function errorHandler(err, req, res, next) {
+    console.log("..Error Handler..")
     var ip = req.headers['x-forwarded-for'] ||
         req.connection.remoteAddress ||
         req.socket.remoteAddress ||
