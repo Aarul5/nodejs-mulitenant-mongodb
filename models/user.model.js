@@ -31,3 +31,4 @@ var UserModel = new UserSchema({
     }
 }, { versionkey: false, collection: 'userlogin' });
 mongoose.model('UserModel', UserModel);
+

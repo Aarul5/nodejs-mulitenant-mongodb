@@ -96,7 +96,7 @@ function jwtverify(token) {
 
 //Generate JWT Token
 function getJWT(userId, DataBaseName) {
-    var accessToken = jwt.sign({ 'UserName': userId, 'CName': DataBaseName, 'Permission': ['update', 'get all school records', 'delete'] }, config.secret,
+    var accessToken = jwt.sign({ 'UserName': userId, 'CName': DataBaseName, 'Permission': ['update', 'get all school record', 'delete'] }, config.secret,
         {
             //algorithms: ["HS256", "HS384"],
             issuer: config.issuer

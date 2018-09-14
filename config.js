@@ -7,3 +7,4 @@ configObject.jwtExpiredAt = 1; //no.of days
 configObject.Prefix = 'Keo_'; //no.of days
 
 module.exports = configObject;
+

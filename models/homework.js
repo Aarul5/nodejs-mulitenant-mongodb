@@ -29,4 +29,4 @@ function createSchema(connection) {
 
 module.exports = {
     createSchema: createSchema
-}
+} 
