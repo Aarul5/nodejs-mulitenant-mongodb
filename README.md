@@ -15,7 +15,7 @@ Step 2 : node server.js
 ** API Details **
 
 1) To Create Admin user [Seperate DB]
-
+```
     Method : POST
     URL : http://localhost:8085/api/createUser
     POST Data: {
@@ -31,11 +31,11 @@ Step 2 : node server.js
         "Role": "Admin",
         "__v": 0
     }
-
+```
 //----------------------------------------------------------------------------------------------------
 
 2) Login Admin User
-
+```
     Method : POST
     URL : http://localhost:8085/api/create/school
     POST Data : {
@@ -51,11 +51,11 @@ Step 2 : node server.js
         "iss": "Keo plus LMS",
         "iat": "2018-09-17T05:06:06.186Z"
     }
-
+```
 //-----------------------------------------------------------------------------------------------------
 
 3) To Create School - under Admin user DB
-
+```
     Method : POST
     URL : http://localhost:8085/api/create/school
     Header : Authorization : Bearer token
@@ -72,11 +72,11 @@ Step 2 : node server.js
         "DeanName": "Ravi",
         "__v": 0
     }
-
+```
 //---------------------------------------------------------------------------------------------------
 
 4) Get All schools in collection Admin Db [check routing : Permission] 
-
+```
     Method : GET
     URL : http://localhost:8085/api/getAllSchool
     Header : Authorization : Bearer token
@@ -90,5 +90,5 @@ Step 2 : node server.js
             "__v": 0
         }
     ]
-
+```
 //---------------------------------------------------------------------------------------------------
