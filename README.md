@@ -8,9 +8,9 @@ I Will get the DB Name from the header(token) and find the database to create or
 I also check that if the user info is already stored in global, there is no need to query the database again. 
 
 
-** Project installation deatils **
-Step 1 : npm install
-Step 2 : node server.js
+** Project installation deatils ** <br/>
+    Step 1 : npm install <br/>
+    Step 2 : node server.js
 
 ** API Details **
 
@@ -32,7 +32,6 @@ Step 2 : node server.js
         "__v": 0
     }
 ```
-//----------------------------------------------------------------------------------------------------
 
 2) Login Admin User
 ```
@@ -52,7 +51,6 @@ Step 2 : node server.js
         "iat": "2018-09-17T05:06:06.186Z"
     }
 ```
-//-----------------------------------------------------------------------------------------------------
 
 3) To Create School - under Admin user DB
 ```
@@ -73,7 +71,6 @@ Step 2 : node server.js
         "__v": 0
     }
 ```
-//---------------------------------------------------------------------------------------------------
 
 4) Get All schools in collection Admin Db [check routing : Permission] 
 ```
@@ -91,4 +88,3 @@ Step 2 : node server.js
         }
     ]
 ```
-//---------------------------------------------------------------------------------------------------
