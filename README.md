@@ -12,7 +12,6 @@ I also check that if the user info is already stored in global, there is no need
 Step 1 : npm install
 Step 2 : node server.js
 
-
 ** API Details **
 
 1) To Create Admin user [Seperate DB]

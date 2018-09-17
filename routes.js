@@ -20,4 +20,6 @@ var permission = function (permissions) {
     return function (req, res, next) {
         authServer.permission(req, res, next, permissions);
     };
-}; 
+};
+
+

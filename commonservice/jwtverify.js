@@ -52,5 +52,3 @@ module.exports = {
     jwtverify,
     permission
 }
-
-
