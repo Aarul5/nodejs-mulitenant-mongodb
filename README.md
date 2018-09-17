@@ -8,7 +8,7 @@ I Will get the DB Name from the header(token) and find the database to create or
 I also check that if the user info is already stored in global, there is no need to query the database again. 
 
 
-** Project installation deatils ** <br/>
+** Project installation details ** <br/>
     Step 1 : npm install <br/>
     Step 2 : node server.js
 
