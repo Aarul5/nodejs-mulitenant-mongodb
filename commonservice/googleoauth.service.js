@@ -1,10 +1,11 @@
 var GoogleStrategy = require('passport-google-oauth20').Strategy;
 var passport = require('passport');
 
+//Testing 
 passport.use(new GoogleStrategy({
-    clientID: '728768458083-d8rncq93hepgopc00dlvo4ds601uda43.apps.googleusercontent.com',
-    clientSecret: 'EFeKJf0RtZkSDhC0_jxC9ZRL',
-    callbackURL: "http://localhost:8085/login/google/redirect"
+    clientID: 's',
+    clientSecret: 's',
+    callbackURL: "s"
 },
     function (accessToken, refreshToken, profile, cb) {
         console.log(profile);

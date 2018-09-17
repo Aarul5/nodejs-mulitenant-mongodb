@@ -21,7 +21,7 @@ authDB.on('disconnected', () => {
 });
 //End Auth Db connection
 
-//middleware : Find the Usename from header and connect db.
+//middleware : Find the DB Name from token and connect db.
 app.use(dynamicDB.authorizeDB);
 
 require('./routes')(router);
@@ -30,7 +30,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(function (req, res, next) {
     res.setHeader('Access-Control-Allow-Origin', '*'); //Enable CORS
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, UserID');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST');
     next();
 });
@@ -52,5 +52,5 @@ function errorHandler(err, req, res, next) {
 }
 
 app.listen(8085, function () {
-    console.log("localhost:8085 Auth server.")
+    console.log("Server started : http://localhost:8085");
 })

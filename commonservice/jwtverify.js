@@ -14,7 +14,7 @@ function jwtverify(req, next) {
 }
 
 function permission(req, res, next, permissions) {
-    console.log("permission verify.....")
+    console.log("Checking permissions.....")
     var header = req.get('Authorization');
     if (header) {
         if (jwtDecode(header).Permission !== undefined) {

@@ -58,7 +58,6 @@ module.exports.userLogin = function (req, res, next) {
                 getJWTResult(username, user)
                     .then((jwtResult) => {
                         req.UserName = username;
-                        jwtverify(jwtResult.accessToken)
                         return res.status(200).send(jwtResult);
                     });
             } else {
@@ -71,34 +70,11 @@ module.exports.userLogin = function (req, res, next) {
 }
 
 
-module.exports.userLoginGoogle = function (req, res, next) {
-    var username = req.body.UserName;
-    var password = req.body.Password;
-    console.log("Google Auth...");
-    passport.authenticate('google', {
-        scope: ['profile']
-    })
-}
-module.exports.googleAuth = function (req, res, next) {
-    var username = req.body.UserName;
-    var password = req.body.Password;
-    res.send("Google Redirect url...")
-}
-
-
-
-function jwtverify(token) {
-    jwt.verify(token, config.secret, { issuer: config.issuer }, function (err, decodedToken) {
-        console.log(decodedToken);
-    })
-}
-
-
 //Generate JWT Token
 function getJWT(userId, DataBaseName) {
     var accessToken = jwt.sign({ 'UserName': userId, 'CName': DataBaseName, 'Permission': ['update', 'get all school record', 'delete'] }, config.secret,
         {
-            //algorithms: ["HS256", "HS384"],
+            algorithm: "HS256",
             issuer: config.issuer
         });
     return accessToken;

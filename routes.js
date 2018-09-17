@@ -10,14 +10,10 @@ module.exports = function (router) {
     router.post('/createUser', userinfo.createClient);
     router.post('/login', userinfo.userLogin);
 
-    //Testing
-    router.get('/login/google', userinfo.userLoginGoogle);
-    router.get('/login/google/redirect', userinfo.googleAuth);
-
     //Routing for School Creation
     var school = require('./controller/school.controller')
     router.post('/create/school', school.CreateSchool);
-    router.get('/getAllSchool', permission('get all school records'), school.getAllSchool);
+    router.get('/getAllSchool', permission('get all school record'), school.getAllSchool);
 }
 
 var permission = function (permissions) {

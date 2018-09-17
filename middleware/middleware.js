@@ -14,8 +14,7 @@ global.DBConnectionsList = {};
 var authorizeDB = function (req, res, next) {
     console.log("User Db Connection Process.....")
 
-    //Get user name from the header. 
-    //var dbName = req.get('UserName');
+    //Get DB name from the header(token). 
     var header = req.get('Authorization');
     if (!header) {
         return next();
@@ -29,21 +28,18 @@ var authorizeDB = function (req, res, next) {
         var token = header.split(' ')[1];
         if (tokenType !== undefined && token !== undefined && tokenType !== '' && token !== '') {
             if (tokenType === 'Bearer') {
-                console.log("Authorization Bearer verified.")
                 jwt.verify(token, config.secret, { issuer: config.issuer }, function (err, decodedToken) {
                     if (err) {
                         return res.status(401).send('You are not an Authorized user.');
                     }
                     if (decodedToken.CName) {
                         var dbName = `${config.Prefix}${decodedToken.CName}`;
-                        console.log(dbName);
                         if (DBConnectionsList[dbName]) {
                             console.log("DB in Connection List.....")
                             return next();
                         } else {
                             DBConnectionsList[dbName] = mongoose.createConnection('mongodb://localhost:27017/' + dbName);
                             //Load All models under db connection and store it 'DBConnectionsList'.
-                            console.log("dbName : " + dbName);
                             DBConnectionsList[dbName]['studentModel'] = dataBaseSchema.createSchema(DBConnectionsList[dbName]);
                             console.log("New DB added in Connection List.....")
                             return next();
