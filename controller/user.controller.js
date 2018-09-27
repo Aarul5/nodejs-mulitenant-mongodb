@@ -8,9 +8,6 @@ var config = require('../config.js');
 var Q = require('q');
 var passwordHasher = require('password-hash');
 var passport = require('passport');
-
-
-
 /**
  * Create New User and store in AuthDB
  * success -> create DataBase under UserName
@@ -46,20 +43,67 @@ module.exports.createClient = function (req, res, next) {
     }
 };
 
+
+module.exports.createUser = function (req, res, next) {
+    var application = req.body;
+    if (application) {
+        application.Password = getHashedPassword(req.body.Password);
+        user.create(application, function (err, success) {
+            if (err) {
+                return res.status(402).send(err);
+            }
+            if (success) {
+                return res.status(200).send(success);
+            } else {
+                return res.status(404).send('User not created.');
+            }
+        });
+    } else {
+        return res.status(400).send('Data not provide.');
+    }
+};
+
 module.exports.userLogin = function (req, res, next) {
     var username = req.body.UserName;
     var password = req.body.Password;
-    user.findOne({ 'UserName': new RegExp('^' + username + '$', "i") }, function (err, user) {
+    user.findOne({ 'UserName': new RegExp('^' + username + '$', "i") }, function (err, userinfo) {
         if (err) {
             return res.status(402).send(err);
         }
-        if (user) {
-            if (passwordHasher.verify(password, user.Password)) {
-                getJWTResult(username, user)
-                    .then((jwtResult) => {
-                        req.UserName = username;
-                        return res.status(200).send(jwtResult);
-                    });
+        if (userinfo) {
+            if (passwordHasher.verify(password, userinfo.Password)) {
+                if (userinfo.Role == 'Admin') {
+                    getJWTResult(username, userinfo.Role, userinfo.DataBaseName)
+                        .then((jwtResult) => {
+                            req.UserName = username;
+                            storeDatainRedisServer(jwtResult, function (result) {
+                                if (result) {
+                                    return res.status(200).send(jwtResult);
+                                }
+                            })
+                        });
+                } else {
+                    user.findOne({
+                        'UserName': { $in: userinfo.organization }
+                    }, function (err, school) {
+                        if (err) {
+                            return res.status(402).send(err);
+                        }
+                        if (school) {
+                            getJWTResult(username, userinfo.Role, school.DataBaseName, userinfo.organization)
+                                .then((jwtResult) => {
+                                    req.UserName = username;
+                                    storeDatainRedisServer(jwtResult, function (result) {
+                                        if (result) {
+                                            return res.status(200).send(jwtResult);
+                                        }
+                                    })
+                                });
+                        } else {
+                            return res.status(402).send("organization not found");
+                        }
+                    })
+                }
             } else {
                 return res.status(400).send('Password is Invalid.');
             }
@@ -69,6 +113,23 @@ module.exports.userLogin = function (req, res, next) {
     });
 }
 
+function storeDatainRedisServer(jwtResult, callback) {
+    console.log("Redis Server...");
+    var testredisData = {
+        "accessToken": jwtResult.accessToken,
+        "Permission": ["Update", "get all school record"].toString()
+    }
+    console.log("Redis Server 0...");
+    jwtResult.organization.forEach(function (Obj) {
+        testredisData[Obj] = false;
+    });
+
+    console.log(testredisData);
+    console.log("Redis Server 1...");
+    redisClient.HMSET(jwtResult.accessToken, testredisData);
+    console.log("Redis Server 2...");
+    callback(true);
+}
 
 //Generate JWT Token
 function getJWT(userId, DataBaseName) {
@@ -81,20 +142,22 @@ function getJWT(userId, DataBaseName) {
 }
 
 //Generate JWT response
-function buildJWTResponse(userId, roles, DataBaseName) {
+function buildJWTResponse(userId, roles, DataBaseName, organization) {
+    console.log(organization);
     var JWTResponseObject = new Object();
     var accessToken = getJWT(userId, DataBaseName);
     JWTResponseObject.user = userId;
     JWTResponseObject.roles = roles;
+    JWTResponseObject.organization = organization;
     JWTResponseObject.accessToken = accessToken;
     JWTResponseObject.iss = 'Keo plus LMS';
     JWTResponseObject.iat = new Date();
     return JWTResponseObject;
 }
 
-function getJWTResponse(userId, roles, DataBaseName, callback) {
+function getJWTResponse(userId, roles, DataBaseName, organization, callback) {
     //Build AccessTokenModelObject
-    var JWTResponseObject = buildJWTResponse(userId, roles, DataBaseName);
+    var JWTResponseObject = buildJWTResponse(userId, roles, DataBaseName, organization);
     var accessTokenModelObject = new Object();
     accessTokenModelObject.UserName = userId;
     accessTokenModelObject.AccessToken = JWTResponseObject.accessToken;
@@ -102,10 +165,9 @@ function getJWTResponse(userId, roles, DataBaseName, callback) {
     callback(null, JWTResponseObject);
 }
 
-
-function getJWTResult(username, user) {
+function getJWTResult(username, role, dataBaseName, organization) {
     var deferred = Q.defer();
-    getJWTResponse(username, user.Role, user.DataBaseName, function (err, JWTResponse) {
+    getJWTResponse(username, role, dataBaseName, organization, function (err, JWTResponse) {
         if (err) {
             deferred.reject(err);
         }
@@ -117,7 +179,6 @@ function getJWTResult(username, user) {
     });
     return deferred.promise;
 }
-
 
 //Password hashing
 function getHashedPassword(plainPassword) {

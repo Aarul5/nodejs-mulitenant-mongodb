@@ -28,3 +28,12 @@ module.exports.getAllSchool = function (req, res, next) {
         }
     });
 }
+
+module.exports.getRedisServerData = function (req, res, next) {
+    let token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VyTmFtZSI6IkFydWwiLCJDTmFtZSI6IkRCMSIsIlBlcm1pc3Npb24iOlsidXBkYXRlIiwiZ2V0IGFsbCBzY2hvb2wgcmVjb3JkIiwiZGVsZXRlIl0sImlhdCI6MTUzNzI1OTQ4MywiaXNzIjoiS2VvIHBsdXMgTE1TIn0.N75JL4YEKEMZrZvSGdnSiAQpm_2G6VPRDyUVlAKTTog";
+    redisClient.get(token, function (err, reply) {
+        let data = JSON.parse(reply);
+        console.log(typeof data);
+        res.send(data.Permission);
+    });
+}

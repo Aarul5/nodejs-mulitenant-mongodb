@@ -7,7 +7,7 @@ var config = require('../config.js');
 global.DBConnectionsList = {};
 
 /**
- * 1. Get UserName from the header part.
+ * 1. Get DB Name from the header part.
  * 2. Check the DB Connection is avaliable in 'DBConnectionsList' else Create new DBconnection.
  * 3. After creating new Connection Load All models under db connection and store it 'DBConnectionsList'.
  */
@@ -35,13 +35,13 @@ var authorizeDB = function (req, res, next) {
                     if (decodedToken.CName) {
                         var dbName = `${config.Prefix}${decodedToken.CName}`;
                         if (DBConnectionsList[dbName]) {
-                            console.log("DB in Connection List.....")
+                            console.log("DB in Connection List.....");
                             return next();
                         } else {
                             DBConnectionsList[dbName] = mongoose.createConnection('mongodb://localhost:27017/' + dbName);
                             //Load All models under db connection and store it 'DBConnectionsList'.
                             DBConnectionsList[dbName]['studentModel'] = dataBaseSchema.createSchema(DBConnectionsList[dbName]);
-                            console.log("New DB added in Connection List.....")
+                            console.log("New DB added in Connection List.....");
                             return next();
                         }
                     } else {

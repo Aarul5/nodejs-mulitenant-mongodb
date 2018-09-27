@@ -18,17 +18,16 @@ var UserModel = new UserSchema({
     },
     DataBaseName: {
         type: String,
-        required: [true, 'Database required.'],
         trim: true
     },
     Role: {
         type: String,
         trim: true
     },
-    GoogleId: {
+    organization: [{
         type: String,
         trim: true
-    }
+    }]
 }, { versionkey: false, collection: 'userlogin' });
 mongoose.model('UserModel', UserModel);
 

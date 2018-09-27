@@ -5,10 +5,24 @@ var bodyParser = require('body-parser')
 var router = express.Router();
 var dynamicDB = require('./middleware/middleware');
 var passportconfig = require('./commonservice/googleoauth.service');
+var redis = require("redis");
+var config = require('./config');
+
+var redisURI = 'redis://' + config.redisDB.USERNAME + '@' + config.redisDB.DBHOST + ':' + config.redisDB.DBPORT;
+var redisClient = redis.createClient(redisURI);
+redisClient.on("error", function (err) {
+    console.log("Error in redis Connection:" + err);
+});
+redisClient.on('connect', function () {
+    console.log('Connected to redis...');
+});
+global.redisClient = redisClient;
+
+
 //Auth Db Connection
 var url = "mongodb://localhost:27017/AuthDB";
 
-mongoose.connect(url);
+mongoose.connect(url, { useNewUrlParser: true });
 var authDB = mongoose.connection;
 authDB.on('error', function connectionError(err) {
     console.log("error connecting authentication database:- " + err);
